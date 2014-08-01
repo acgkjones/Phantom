@@ -67,5 +67,12 @@ namespace Phantom.Tests {
 			Execute("non_zero_exit");
 			Environment.ExitCode.ShouldEqual(1);
 		}
+
+		[Test]
+		public void Execute_returns_exit_code() {
+			ScriptFile = "Scripts/Exec.boo";
+			Execute("non_zero_exit_ignore_and_collect_exit_code");
+			AssertOutput("non_zero_exit_ignore_and_collect_exit_code:", "The exit code was: 99");
+		}
 	}
 }

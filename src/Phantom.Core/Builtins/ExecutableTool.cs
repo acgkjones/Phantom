@@ -24,12 +24,12 @@ namespace Phantom.Core.Builtins {
 
 		protected abstract void Execute();
 
-		protected void Execute(string args) {
+		protected int Execute(string args) {
 			if (!File.Exists(toolPath)) {
 				throw new FileNotFoundException(string.Format("Could not execute the file '{0}' as it does not exist.", toolPath));
 			}
 
-			IOFunctions.exec(toolPath, args);
+			return IOFunctions.exec(toolPath, args);
 		}
 
 		public T Run() {

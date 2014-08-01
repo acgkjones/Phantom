@@ -31,8 +31,8 @@ namespace Phantom.Core.Builtins {
 		///   The command to execute
 		/// </param>
 		/// <param name="args">Additional args</param>
-		public static void exec(string command, string args) {
-			exec(command, args, new Hashtable());
+		public static int exec(string command, string args) {
+			return exec(command, args, new Hashtable());
 		}
 
 		/// <summary>
@@ -46,14 +46,13 @@ namespace Phantom.Core.Builtins {
 		/// <param name="options">
 		///   A hash of options to set on the process (like WorkingDir)
 		/// </param>
-		public static void exec(string command, string args, IDictionary options) {
+		public static int exec(string command, string args, IDictionary options) {
 			command = command.Replace('\\', Path.DirectorySeparatorChar);
 			string workingDir = options.ValueOrDefault("WorkingDir", ".").Replace('\\', Path.DirectorySeparatorChar);
 			bool ignoreNonZeroExitCode = options.ValueOrDefault("IgnoreNonZeroExitCode", false);
 			
 			if (Type.GetType("Mono.Runtime") != null && Path.GetExtension(command).ToUpper() == ".EXE") {
-				exec(string.Format("mono {0} {1}", command, args), options);
-				return;
+				return exec(string.Format("mono {0} {1}", command, args), options);
 			}
 			
 			var psi = new ProcessStartInfo(command, args) {
@@ -69,9 +68,11 @@ namespace Phantom.Core.Builtins {
 			    var errortext = process.StandardError.ReadAllAsString();
                 throw new ExecutionFailedException(exitCode, errortext);
 			}
+
+			return exitCode;
 		}
 
-		public static void exec(string command, IDictionary options) {
+		public static int exec(string command, IDictionary options) {
 			string commandPrompt = UtilityFunctions.env("COMSPEC");
 			string args = string.Format("/C \"{0}\"", command);
 			
@@ -80,11 +81,11 @@ namespace Phantom.Core.Builtins {
 				args = string.Format("-c \"{0}\"", command);
 			}
 			
-			exec(commandPrompt, args, options);
+			return exec(commandPrompt, args, options);
 		}
 
-		public static void exec(string command) {
-			exec(command, new Hashtable());
+		public static int exec(string command) {
+			return exec(command, new Hashtable());
 		}
 
 		/// <summary>

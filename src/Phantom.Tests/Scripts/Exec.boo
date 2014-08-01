@@ -18,3 +18,7 @@ target non_zero_exit_singlestr:
 
 target non_zero_exit_ignore_singlestr:
 	exec("..\\..\\Scripts\\Support\\ExitTest.exe 99", { 'IgnoreNonZeroExitCode': true })
+
+target non_zero_exit_ignore_and_collect_exit_code:
+	exit = exec("..\\..\\Scripts\\Support\\ExitTest.exe 99", { 'IgnoreNonZeroExitCode': true })
+	print "The exit code was: $exit"
